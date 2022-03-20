@@ -9,6 +9,7 @@ const LOCAL_STORAGE_KEY: string | null = "todos-react-typescript";
 
 const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [toggleAllTodos, setToggleAllTodos] = useState<boolean>(false);
   const newTodoRef = useRef<HTMLInputElement>(null);
 
   const filterType: string = useLocation().hash;
@@ -27,7 +28,7 @@ const App: React.FC = () => {
   }, [todos]);
 
   const addNewTodo = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== 'Enter') return
+    if (e.key !== "Enter") return;
     const newTodo: string | undefined = newTodoRef.current?.value;
 
     if (newTodo) {
@@ -71,20 +72,29 @@ const App: React.FC = () => {
     setTodos(newTodos);
   };
 
+  const toggleAll = () => {
+    setToggleAllTodos(!toggleAllTodos);
+    
+    let newTodos: Todo[] = [...todos];
+    newTodos.map((todo) => todo.complete = toggleAllTodos);
+    setTodos(newTodos);
+  }
+
   return (
     <div className="todoapp">
       <header>
-      <h1 className="heading">todos</h1>
-      <input type="checkbox" className="toggle-all" />
-      <input
-        ref={newTodoRef}
-        type="text"
-        className="new-todo"
-        placeholder="What needs to be done?"
-        onKeyDown={addNewTodo}
-      />
+        <h1 className="heading">todos</h1>
+        <input
+          ref={newTodoRef}
+          type="text"
+          className="new-todo"
+          placeholder="What needs to be done?"
+          onKeyDown={addNewTodo}
+        />
       </header>
       <section className="main">
+        <input type="checkbox" className="toggle-all"/>
+        <label  onClick={toggleAll}>Mark all as complete</label>
         <TodoList
           todos={todos}
           setTodos={setTodos}
@@ -94,14 +104,35 @@ const App: React.FC = () => {
       </section>
       <footer className="footer">
         <span className="todo-count">
-          <strong>{todos.filter((todo) => !todo.complete).length}</strong> items left
+          <strong>{todos.filter((todo) => !todo.complete).length}</strong> items
+          left
         </span>
         <ul className="filters">
-          <li><Link to="/#/" className={filterType === '#/' ? 'selected': ''}>All</Link></li>
-          <li><Link to="/#/active" className={filterType === '#/active' ? 'selected': ''}>Active</Link></li>
-          <li><Link to="/#/completed" className={filterType === '#/' ? 'completed': ''}>Completed</Link></li>
+          <li>
+            <Link to="/#/" className={filterType === "#/" ? "selected" : ""}>
+              All
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/#/active"
+              className={filterType === "#/active" ? "selected" : ""}
+            >
+              Active
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/#/completed"
+              className={filterType === "#/" ? "completed" : ""}
+            >
+              Completed
+            </Link>
+          </li>
         </ul>
-        <button className="clear-completed" onClick={clearComplete}>Clear completed</button>
+        <button className="clear-completed" onClick={clearComplete}>
+          Clear completed
+        </button>
       </footer>
     </div>
   );
