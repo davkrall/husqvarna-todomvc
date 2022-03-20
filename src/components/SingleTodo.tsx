@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { Todo } from '../model';
+import React, { useState, useRef, useEffect } from "react";
+import { Todo } from "../model";
 
 interface Props {
   todo: Todo;
@@ -19,6 +19,11 @@ const SingleTodo: React.FC<Props> = ({
   const [edit, setEdit] = useState<boolean>(false);
   const [editTodo, setEditTodo] = useState<string>(todo.text);
   const editTodoRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if(edit){
+      editTodoRef.current!.focus();
+    }
+  }, [edit])
 
   function todoChange() {
     toggleTodo(todo.id);
@@ -28,45 +33,63 @@ const SingleTodo: React.FC<Props> = ({
     deleteTodo(todo.id);
   }
 
-  function switchEdit() {
-    setEdit(!edit);
+  function startEdit() {
+    setEdit(true);
   }
 
-  function finishEditEnter(e: React.KeyboardEvent<HTMLInputElement>){
-    if (e.key !== 'Enter') return;
-    makeEdit(todo.id);
+  function finishEditEnter(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Escape") {
+      //Using non-null assertion operator https://stackoverflow.com/questions/40349987/how-to-suppress-error-ts2533-object-is-possibly-null-or-undefined
+      editTodoRef.current!.value = editTodo;
+      setEdit(false);
+      return;
+    } else if (e.key === "Enter") {
+      makeEdit(todo.id);
+    }
   }
 
-  function finishEditBlur(){
+  function finishEditBlur() {
     makeEdit(todo.id);
   }
 
   const makeEdit = (id: string) => {
-    const editedTodo: string | undefined = editTodoRef.current?.value;
+    const editedTodo: string | undefined = editTodoRef.current?.value.trim();
 
     if (editedTodo) {
-      setTodos(todos.map((todo) => (
-        todo.id === id?{...todo, text:editedTodo}:todo
-      )));
-      //Using non-null assertion operator https://stackoverflow.com/questions/40349987/how-to-suppress-error-ts2533-object-is-possibly-null-or-undefined
-      editTodoRef.current!.value = '';
+      setTodos(
+        todos.map((todo) =>
+          todo.id === id ? { ...todo, text: editedTodo } : todo
+        )
+      );
+      editTodoRef.current!.value = editedTodo;
+      setEditTodo(editedTodo);
+    } else {
+      todoDestroy();
     }
-      switchEdit();
+    setEdit(false);
   };
 
   return (
-    <li className={`${todo.complete ? "completed" : ""} ${edit ? "editing" : ""}`}>
-        <div className="view">
-          <input
-            className="toggle"
-            type="checkbox"
-            checked={todo.complete}
-            onChange={todoChange}
-          />
-          <label onDoubleClick={switchEdit}>{todo.text}</label>
-          <button className="destroy" onClick={todoDestroy}></button>
-        </div>
-        <input className="edit" ref={editTodoRef} defaultValue={todo.text} onKeyDown={finishEditEnter} onBlur={finishEditBlur}/>
+    <li
+      className={`${todo.complete ? "completed" : ""} ${edit ? "editing" : ""}`}
+    >
+      <div className="view">
+        <input
+          className="toggle"
+          type="checkbox"
+          checked={todo.complete}
+          onChange={todoChange}
+        />
+        <label onDoubleClick={startEdit}>{todo.text}</label>
+        <button className="destroy" onClick={todoDestroy}></button>
+      </div>
+      <input
+        className="edit"
+        ref={editTodoRef}
+        defaultValue={todo.text}
+        onKeyDown={finishEditEnter}
+        onBlur={finishEditBlur}
+      />
     </li>
   );
 };
