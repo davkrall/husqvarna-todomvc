@@ -21,7 +21,7 @@ const App: React.FC = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos));
   }, [todos]);
 
-  const addNewTodo = (/*e: InputEvent*/) => {
+  const addNewTodo = () => {
     const newTodo: string | undefined = newTodoRef.current?.value;
 
     if (newTodo) {
@@ -34,6 +34,16 @@ const App: React.FC = () => {
     }
   };
 
+  const toggleTodo = (id: string) => {
+      const newTodos: Todo[] = [...todos];
+      const modifiedTodo: Todo | undefined = newTodos.find(todo => todo.id === id);
+
+      if(modifiedTodo){
+        modifiedTodo.complete = !modifiedTodo.complete;
+      }
+      setTodos(newTodos);
+  }
+
   return (
     <div className="App">
       <span className="heading">todos</span>
@@ -43,8 +53,8 @@ const App: React.FC = () => {
         placeholder="What needs to be done?"
       />
       <button onClick={addNewTodo}>Add</button>
-      <TodoList todos={todos} setTodos={setTodos} />
-      <span>{todos.length} items left</span>
+      <TodoList todos={todos} setTodos={setTodos} toggleTodo={toggleTodo} />
+      <span>{todos.filter(todo => !todo.complete).length} items left</span>
       <a>All</a>
       <a>Active</a>
       <a>Completed</a>
