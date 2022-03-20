@@ -9,7 +9,9 @@ interface Props {
 
 const SingleTodo: React.FC<Props> = ( { todo, todos, setTodos }:Props ) => {
   return (
-    <div>{todo.text}</div>
+    <div>
+      <input type="checkbox" checked={todo.complete}/>
+      {todo.text}</div>
   )
 }
 
