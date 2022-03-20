@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { Todo } from "./model";
 import TodoList from "./components/TodoList";
@@ -10,6 +10,8 @@ const LOCAL_STORAGE_KEY: string | null = "todos-react-typescript";
 const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const newTodoRef = useRef<HTMLInputElement>(null);
+
+  const filterType: string = useLocation().hash;
 
   useEffect(() => {
     const storedTodos: Todo[] = JSON.parse(
@@ -25,7 +27,7 @@ const App: React.FC = () => {
   }, [todos]);
 
   const addNewTodo = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key != 'Enter') return
+    if (e.key !== 'Enter') return
     const newTodo: string | undefined = newTodoRef.current?.value;
 
     if (newTodo) {
@@ -56,7 +58,7 @@ const App: React.FC = () => {
     );
 
     if (deletedTodo) {
-      newTodos = newTodos.filter((todo) => todo.id != id);
+      newTodos = newTodos.filter((todo) => todo.id !== id);
     }
     setTodos(newTodos);
   };
@@ -95,9 +97,9 @@ const App: React.FC = () => {
           <strong>{todos.filter((todo) => !todo.complete).length}</strong> items left
         </span>
         <ul className="filters">
-          <li><Link to="/#/">All</Link></li>
-          <li><Link to="/#/active">Active</Link></li>
-          <li><Link to="/#/completed">Completed</Link></li>
+          <li><Link to="/#/" className={filterType === '#/' ? 'selected': ''}>All</Link></li>
+          <li><Link to="/#/active" className={filterType === '#/active' ? 'selected': ''}>Active</Link></li>
+          <li><Link to="/#/completed" className={filterType === '#/' ? 'completed': ''}>Completed</Link></li>
         </ul>
         <button className="clear-completed" onClick={clearComplete}>Clear completed</button>
       </footer>
