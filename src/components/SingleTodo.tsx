@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Todo } from "../model";
 
+//Props interface for SingleTodo component
 interface Props {
   todo: Todo;
   todos: Todo[];
@@ -16,28 +17,40 @@ const SingleTodo: React.FC<Props> = ({
   toggleTodo,
   deleteTodo,
 }: Props) => {
+  //edit tracks whether the todo is in Edit mode or not
   const [edit, setEdit] = useState<boolean>(false);
+
+  //editTodo keeps the value of the todo text while it's being edited
   const [editTodo, setEditTodo] = useState<string>(todo.text);
+
+  //editTodoRef is used to get the value of the editing input field
   const editTodoRef = useRef<HTMLInputElement>(null);
+
+  //useEffect is used to autofocus on the editing input field once it is activated with the edit mode
   useEffect(() => {
-    if(edit){
+    if (edit) {
+      //Using non-null assertion operator https://stackoverflow.com/questions/40349987/how-to-suppress-error-ts2533-object-is-possibly-null-or-undefined
       editTodoRef.current!.focus();
     }
-  }, [edit])
+  }, [edit]);
 
-  function todoChange() {
+  //Calling the toggleTodo function with the todo's id
+  const todoChange = () => {
     toggleTodo(todo.id);
   }
 
-  function todoDestroy() {
+  //Calling the deleteTodo function with the todo's id
+  const todoDestroy = () => {
     deleteTodo(todo.id);
   }
 
-  function startEdit() {
+  //Turns on Edit mode
+  const startEdit =() => {
     setEdit(true);
   }
 
-  function finishEditEnter(e: React.KeyboardEvent<HTMLInputElement>) {
+  //Handles pressing the Escape button to cancel the edit, and pressing the Enter button to confirm it
+  const finishEditKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Escape") {
       //Using non-null assertion operator https://stackoverflow.com/questions/40349987/how-to-suppress-error-ts2533-object-is-possibly-null-or-undefined
       editTodoRef.current!.value = editTodo;
@@ -48,24 +61,31 @@ const SingleTodo: React.FC<Props> = ({
     }
   }
 
-  function finishEditBlur() {
+  //Calls the makeEdit function if focus is removed from the input field
+  const finishEditBlur = () => {
     makeEdit(todo.id);
   }
 
+  //Handles the editing logic
   const makeEdit = (id: string) => {
+    //The value of the input field is trimmed
     const editedTodo: string | undefined = editTodoRef.current?.value.trim();
 
+    //If the text is truthy, setTodos is called to update the text of the relevant todo item
     if (editedTodo) {
       setTodos(
         todos.map((todo) =>
           todo.id === id ? { ...todo, text: editedTodo } : todo
         )
       );
+      //The value of the input field and editedTodo are updated
       editTodoRef.current!.value = editedTodo;
       setEditTodo(editedTodo);
+      //If editedTodo is empty, delete the todo item
     } else {
       todoDestroy();
     }
+    //Turn off the editing mode
     setEdit(false);
   };
 
@@ -87,7 +107,7 @@ const SingleTodo: React.FC<Props> = ({
         className="edit"
         ref={editTodoRef}
         defaultValue={todo.text}
-        onKeyDown={finishEditEnter}
+        onKeyDown={finishEditKey}
         onBlur={finishEditBlur}
       />
     </li>
