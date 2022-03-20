@@ -1,7 +1,7 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
-import { Todo } from "../model";
-import SingleTodo from "./SingleTodo";
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+import { Todo } from '../model';
+import SingleTodo from './SingleTodo';
 
 
 interface Props {
@@ -33,7 +33,7 @@ const TodoList: React.FC<Props> = ({
       break;
     }
   return (
-    <div className="todo-list">
+    <ul className="todo-list">
       {filteredTodos.map((todo) => {
         return (
           <SingleTodo
@@ -46,7 +46,7 @@ const TodoList: React.FC<Props> = ({
           />
         );
       })}
-    </div>
+    </ul>
   );
 };
 

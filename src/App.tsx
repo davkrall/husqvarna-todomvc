@@ -1,11 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
-import { Todo } from "./model";
-import TodoList from "./components/TodoList";
-import "../node_modules/todomvc-app-css/index.css";
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
+import { Todo } from './model';
+import TodoList from './components/TodoList';
+import '../node_modules/todomvc-app-css/index.css';
+import './app.css';
 
-const LOCAL_STORAGE_KEY: string | null = "todos-react-typescript";
+const LOCAL_STORAGE_KEY: string | null = 'todos-react-typescript';
 
 const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -16,7 +17,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const storedTodos: Todo[] = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_KEY) || "{}"
+      localStorage.getItem(LOCAL_STORAGE_KEY) || '{}'
     );
     if (storedTodos) {
       setTodos(storedTodos);
@@ -28,15 +29,15 @@ const App: React.FC = () => {
   }, [todos]);
 
   const addNewTodo = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== "Enter") return;
-    const newTodo: string | undefined = newTodoRef.current?.value;
+    if (e.key !== 'Enter') return;
+    const newTodo: string | undefined = newTodoRef.current?.value.trim();
 
     if (newTodo) {
       setTodos((prevTodos) => {
         return [...prevTodos, { id: uuidv4(), text: newTodo, complete: false }];
       });
       //Using non-null assertion operator https://stackoverflow.com/questions/40349987/how-to-suppress-error-ts2533-object-is-possibly-null-or-undefined
-      newTodoRef.current!.value = "";
+      newTodoRef.current!.value = '';
     }
   };
 
@@ -81,20 +82,21 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="todoapp">
-      <header>
-        <h1 className="heading">todos</h1>
+    <section className="todoapp">
+      <header className="header">
+        <h1>todos</h1>
         <input
           ref={newTodoRef}
           type="text"
           className="new-todo"
           placeholder="What needs to be done?"
+          autoFocus
           onKeyDown={addNewTodo}
         />
       </header>
-      <section className="main">
-        <input type="checkbox" className="toggle-all"/>
-        <label  onClick={toggleAll}>Mark all as complete</label>
+      <section className={`main ${todos.length === 0 ? "hidden" : ""}`}>
+        <input id="toggle-all" className="toggle-all" type="checkbox"/>
+        <label className="toggle-all" onClick={toggleAll}>Mark all as complete</label>
         <TodoList
           todos={todos}
           setTodos={setTodos}
@@ -102,10 +104,9 @@ const App: React.FC = () => {
           deleteTodo={deleteTodo}
         />
       </section>
-      <footer className="footer">
+      <footer className={`footer ${todos.length === 0 ? "hidden" : ""}`}>
         <span className="todo-count">
-          <strong>{todos.filter((todo) => !todo.complete).length}</strong> items
-          left
+          <strong>{todos.filter((todo) => !todo.complete).length}</strong> item<span className={todos.length === 1 ? "hidden" : ""}>s</span> left
         </span>
         <ul className="filters">
           <li>
@@ -116,25 +117,23 @@ const App: React.FC = () => {
           <li>
             <Link
               to="/#/active"
-              className={filterType === "#/active" ? "selected" : ""}
-            >
+              className={filterType === "#/active" ? "selected" : ""}>
               Active
             </Link>
           </li>
           <li>
             <Link
               to="/#/completed"
-              className={filterType === "#/" ? "completed" : ""}
-            >
+              className={filterType === "#/" ? "completed" : ""}>
               Completed
             </Link>
           </li>
         </ul>
-        <button className="clear-completed" onClick={clearComplete}>
+        <button className={`clear-completed ${todos.filter((todo) => todo.complete).length === 0 ? "hidden" : ""}`} onClick={clearComplete}>
           Clear completed
         </button>
       </footer>
-    </div>
+    </section>
   );
 };
 

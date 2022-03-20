@@ -1,0 +1,17 @@
+.todoapp h1 {
+	color: #273a60 !important;
+}
+
+.filters li a:hover {
+	border-color: #4363a3 !important;
+}
+
+.filters li a.selected {
+	border-color: #273a60 !important;
+}
+
+:focus,
+.toggle:focus + label,
+.toggle-all:focus + label {
+	box-shadow: 0 0 2px 2px #4363a3 !important;
+}

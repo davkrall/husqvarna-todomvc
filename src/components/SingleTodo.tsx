@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { Todo } from "../model";
+import React, { useState, useRef } from 'react';
+import { Todo } from '../model';
 
 interface Props {
   todo: Todo;
@@ -33,7 +33,7 @@ const SingleTodo: React.FC<Props> = ({
   }
 
   function finishEditEnter(e: React.KeyboardEvent<HTMLInputElement>){
-    if (e.key !== "Enter") return;
+    if (e.key !== 'Enter') return;
     makeEdit(todo.id);
   }
 
@@ -49,27 +49,24 @@ const SingleTodo: React.FC<Props> = ({
         todo.id === id?{...todo, text:editedTodo}:todo
       )));
       //Using non-null assertion operator https://stackoverflow.com/questions/40349987/how-to-suppress-error-ts2533-object-is-possibly-null-or-undefined
-      editTodoRef.current!.value = "";
+      editTodoRef.current!.value = '';
     }
       switchEdit();
   };
 
   return (
-    <li className={todo.complete ? "completed" : "" && edit ? "editing" : ""}>
-      {edit ? (
-        <input autoFocus ref={editTodoRef} defaultValue={todo.text} onKeyDown={finishEditEnter} onBlur={finishEditBlur}/>
-      ) : (
-        <div>
+    <li className={`${todo.complete ? "completed" : ""} ${edit ? "editing" : ""}`}>
+        <div className="view">
           <input
-            type="checkbox"
             className="toggle"
+            type="checkbox"
             checked={todo.complete}
             onChange={todoChange}
           />
           <label onDoubleClick={switchEdit}>{todo.text}</label>
           <button className="destroy" onClick={todoDestroy}></button>
         </div>
-      )}
+        <input className="edit" ref={editTodoRef} defaultValue={todo.text} onKeyDown={finishEditEnter} onBlur={finishEditBlur}/>
     </li>
   );
 };
