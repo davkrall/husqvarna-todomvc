@@ -23,11 +23,11 @@ const App: React.FC = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos));
   }, [todos]);
 
-  const addNewTodo = () => {
+  const addNewTodo = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key != 'Enter') return
     const newTodo: string | undefined = newTodoRef.current?.value;
 
     if (newTodo) {
-      console.log(newTodo);
       setTodos((prevTodos) => {
         return [...prevTodos, { id: uuidv4(), text: newTodo, complete: false }];
       });
@@ -70,6 +70,7 @@ const App: React.FC = () => {
 
   return (
     <div className="todoapp">
+      <header>
       <h1 className="heading">todos</h1>
       <input type="checkbox" className="toggle-all" />
       <input
@@ -77,8 +78,9 @@ const App: React.FC = () => {
         type="text"
         className="new-todo"
         placeholder="What needs to be done?"
+        onKeyDown={addNewTodo}
       />
-      <button onClick={addNewTodo}>Add</button>
+      </header>
       <section className="main">
         <TodoList
           todos={todos}
@@ -87,16 +89,16 @@ const App: React.FC = () => {
           deleteTodo={deleteTodo}
         />
       </section>
-      <footer>
+      <footer className="footer">
         <span className="todo-count">
-          {todos.filter((todo) => !todo.complete).length} items left
+          <strong>{todos.filter((todo) => !todo.complete).length}</strong> items left
         </span>
-        <div className="filters">
-          <li>All</li>
-          <li>Active</li>
-          <li>Completed</li>
-        </div>
-        <button onClick={clearComplete}>Clear completed</button>
+        <ul className="filters">
+          <li><a href="#/">All</a></li>
+          <li><a href="#/active">Active</a></li>
+          <li><a href="#/completed">Completed</a></li>
+        </ul>
+        <button className="clear-completed" onClick={clearComplete}>Clear completed</button>
       </footer>
     </div>
   );
