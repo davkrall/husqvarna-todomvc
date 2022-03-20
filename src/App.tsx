@@ -74,7 +74,7 @@ const App: React.FC = () => {
 
   const toggleAll = () => {
     setToggleAllTodos(!toggleAllTodos);
-    
+
     let newTodos: Todo[] = [...todos];
     newTodos.map((todo) => todo.complete = toggleAllTodos);
     setTodos(newTodos);
