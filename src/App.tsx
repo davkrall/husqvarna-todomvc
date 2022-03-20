@@ -4,11 +4,18 @@ import { Todo } from "./model";
 import TodoList from "./components/TodoList";
 import "./App.css";
 
-const LOCAL_STORAGE_KEY: string = "todos-react-typescript";
+const LOCAL_STORAGE_KEY: string | null = "todos-react-typescript";
 
 const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const newTodoRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const storedTodos: Todo[] = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || "{}");
+    if(storedTodos) {
+      setTodos(storedTodos);
+    }
+  }, [])
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos));
