@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { Todo } from "./model";
 import TodoList from "./components/TodoList";
@@ -94,9 +95,9 @@ const App: React.FC = () => {
           <strong>{todos.filter((todo) => !todo.complete).length}</strong> items left
         </span>
         <ul className="filters">
-          <li><a href="#/">All</a></li>
-          <li><a href="#/active">Active</a></li>
-          <li><a href="#/completed">Completed</a></li>
+          <li><Link to="/#/">All</Link></li>
+          <li><Link to="/#/active">Active</Link></li>
+          <li><Link to="/#/completed">Completed</Link></li>
         </ul>
         <button className="clear-completed" onClick={clearComplete}>Clear completed</button>
       </footer>
