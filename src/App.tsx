@@ -8,8 +8,8 @@ import "./app.css";
 
 //Setting the name of the local storage key used to store the todos
 const LOCAL_STORAGE_KEY: string | null = "todos-react-typescript";
-if(!localStorage.getItem(LOCAL_STORAGE_KEY)) {
-  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify([]))
+if (!localStorage.getItem(LOCAL_STORAGE_KEY)) {
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify([]));
 }
 
 const App: React.FC = () => {
@@ -25,14 +25,12 @@ const App: React.FC = () => {
   //Filtertype for tracking the active filter
   const filterType: string = useLocation().hash;
 
-  //This useEffect checks whether there are any todo items stored in localStorage when first opening the application
+  //This useEffect gets any todo items stored in localStorage when first opening the application
   useEffect(() => {
     const storedTodos: Todo[] = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_KEY) || "{}"
     );
-    if (storedTodos) {
-      setTodos(storedTodos);
-    }
+    setTodos(storedTodos);
   }, []);
 
   //This useEffect updates the localStorage data when any todos are changed
@@ -127,7 +125,7 @@ const App: React.FC = () => {
       <footer className={`footer ${todos.length === 0 ? "hidden" : ""}`}>
         <span className="todo-count">
           <strong>{todos.filter((todo) => !todo.complete).length}</strong> item
-          <span className={todos.length === 1 ? "hidden" : ""}>s</span> left
+          <span className={todos.filter((todo) => !todo.complete).length === 1 ? "hidden" : ""}>s</span> left
         </span>
         <ul className="filters">
           <li>
