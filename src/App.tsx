@@ -64,6 +64,11 @@ const App: React.FC = () => {
       modifiedTodo.complete = !modifiedTodo.complete;
     }
     setTodos(newTodos);
+    if(todos.every((todo) => todo.complete === true)){
+      setToggleAllTodos(true);
+    } else if (todos.every((todo) => todo.complete === false)){
+      setToggleAllTodos(false);
+    }
   };
 
   //Deleting a todo after checking if it exists
@@ -86,6 +91,7 @@ const App: React.FC = () => {
     newTodos = newTodos.filter((todo) => !todo.complete);
 
     setTodos(newTodos);
+    setToggleAllTodos(true);
   };
 
   //Logic for button that toggles all todos
@@ -93,7 +99,7 @@ const App: React.FC = () => {
     setToggleAllTodos(!toggleAllTodos);
 
     let newTodos: Todo[] = [...todos];
-    newTodos.map((todo) => (todo.complete = toggleAllTodos));
+    newTodos.map((todo) => (todo.complete = !toggleAllTodos));
     setTodos(newTodos);
   };
 
@@ -111,10 +117,13 @@ const App: React.FC = () => {
         />
       </header>
       <section className={`main ${todos.length === 0 ? "hidden" : ""}`}>
-        <input id="toggle-all" className="toggle-all" type="checkbox" />
-        <label className="toggle-all" onClick={toggleAll}>
-          Mark all as complete
-        </label>
+        <input
+          id="toggle-all"
+          className="toggle-all"
+          type="checkbox"
+          checked={toggleAllTodos}
+        />
+        <label onClick={toggleAll}>Mark all as complete</label>
         <TodoList
           todos={todos}
           setTodos={setTodos}
@@ -125,7 +134,16 @@ const App: React.FC = () => {
       <footer className={`footer ${todos.length === 0 ? "hidden" : ""}`}>
         <span className="todo-count">
           <strong>{todos.filter((todo) => !todo.complete).length}</strong> item
-          <span className={todos.filter((todo) => !todo.complete).length === 1 ? "hidden" : ""}>s</span> left
+          <span
+            className={
+              todos.filter((todo) => !todo.complete).length === 1
+                ? "hidden"
+                : ""
+            }
+          >
+            s
+          </span>{" "}
+          left
         </span>
         <ul className="filters">
           <li>
