@@ -91,7 +91,7 @@ const App: React.FC = () => {
     newTodos = newTodos.filter((todo) => !todo.complete);
 
     setTodos(newTodos);
-    setToggleAllTodos(true);
+    setToggleAllTodos(false);
   };
 
   //Logic for button that toggles all todos
