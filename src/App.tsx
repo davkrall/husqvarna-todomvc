@@ -8,6 +8,9 @@ import "./app.css";
 
 //Setting the name of the local storage key used to store the todos
 const LOCAL_STORAGE_KEY: string | null = "todos-react-typescript";
+if(!localStorage.getItem(LOCAL_STORAGE_KEY)) {
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify([]))
+}
 
 const App: React.FC = () => {
   //State management for all todo items
